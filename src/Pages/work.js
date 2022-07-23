@@ -4,8 +4,12 @@ import Select from 'react-select';
 
 export default function Work(){
 
-  const [ arr,setArr] = useState([55,44,77,66,33,11,88,99,22]);
+  const [ arr,setArr] = useState([55,44,77,66,33,11,88,99,22,55,44,77,66,33,11,88,99,22,55,44,77,66,33,11,88,99,22]);
   const [maxElem,setMaxElem]=useState(0);
+  const [allElemLength,setAllElemLength]=useState(0);
+  const [maxWidth,setMaxWidth]=useState(0);
+  const [maxHeight,setMaxHeight]=useState(0);
+  const [started,setStarted]=useState(false);
 
   const [selectedOption,setSelectedOption]=useState({});
 
@@ -15,33 +19,46 @@ export default function Work(){
 
   useEffect(()=>{
     setMaxElem(Math.max(...arr));
+    setAllElemLength(arr.length);
+    handleResize();
+    window.addEventListener("resize", handleResize, false);
   },[]);
 
+  function handleResize(){
+    var block=document.querySelector(`.center-div`);
+    setMaxWidth(block?.clientWidth);
+    setMaxHeight(block?.clientHeight);
+  }
+
   async function bubbleSort(){
+    
+    setStarted(true);
+
+    const test_Arr=[...arr];
    
     var check=0;
-    for(var i=0;i<arr.length;i++){
+    for(var i=0;i<test_Arr.length;i++){
       var max=-1;
       
-      for(var j=0;j<arr.length-i-1;j++){
+      for(var j=0;j<test_Arr.length-i-1;j++){
 
-        var block=document.querySelector(`.div${arr[j]}`);
-        var block2=document.querySelector(`.div${arr[j+1]}`);
+        var block=document.querySelector(`.div${test_Arr[j]}`);
+        var block2=document.querySelector(`.div${test_Arr[j+1]}`);
 
-        if(arr[j]>max){
+        if(test_Arr[j]>max){
 
           block.style.backgroundColor="red";
-          max=arr[j];
+          max=test_Arr[j];
 
         }
 
-        if(arr[j]>arr[j+1]){
+        if(test_Arr[j]>test_Arr[j+1]){
 
-          check=arr[j];
-          arr[j]=arr[j+1];
-          arr[j+1]=check;
+          check=test_Arr[j];
+          test_Arr[j]=test_Arr[j+1];
+          test_Arr[j+1]=check;
           block.style.backgroundColor="red";
-          await sleep(50);
+          await sleep(10);
           block.style.backgroundColor="blue";
           block2.style.backgroundColor="red";
         
@@ -52,7 +69,7 @@ export default function Work(){
           block2.style.backgroundColor="red";
 
         }
-        setArr([...arr]);
+        setArr([...test_Arr]);
         await sleep(50);
         block.style.backgroundColor="blue";
         block2.style.backgroundColor="blue";
@@ -66,29 +83,35 @@ export default function Work(){
     
     // setArr(neww);
     // console.log("sort",arr);
+
+    setStarted(false);
   }
 
   async function insertion_Sort(){
+
+    setStarted(true);
+
+    const test_Arr=[...arr];
     
-    for (let i = 1; i < arr.length; i++) {
+    for (let i = 1; i < test_Arr.length; i++) {
         let j=i;
 
-        var block2=document.querySelector(`.div${arr[i]}`);
+        var block2=document.querySelector(`.div${test_Arr[i]}`);
         block2.style.backgroundColor="red";
 
-        while(j>0 && arr[j]<arr[j-1]){
+        while(j>0 && test_Arr[j]<test_Arr[j-1]){
           await sleep(10);
           block2.style.backgroundColor="blue";
-          var block=document.querySelector(`.div${arr[j-1]}`);
+          var block=document.querySelector(`.div${test_Arr[j-1]}`);
           block.style.backgroundColor="red";
 
-          var temp=arr[j];
-          arr[j]=arr[j-1];
-          arr[j-1]=temp;
+          var temp=test_Arr[j];
+          test_Arr[j]=test_Arr[j-1];
+          test_Arr[j-1]=temp;
 
           j--;
           
-          setArr([...arr]);
+          setArr([...test_Arr]);
 
           await sleep(60);
           block.style.backgroundColor="blue";
@@ -97,6 +120,8 @@ export default function Work(){
         block2.style.backgroundColor="blue";
   
     }
+
+    setStarted(false);
     
   }
 
@@ -104,38 +129,59 @@ export default function Work(){
 
   function refresh(){
     
-    setArr([55,44,77,66,33,11,88,99,22]);
+    setArr([55,44,77,66,33,11,88,99,22,55,44,77,66,33,11,88,99,22,55,44,77,66,33,11,88,99,22]);
 
   }
 
   const options = [
-    { value: 'bubbleSort', label: 'Bubble Sort', onClick : bubbleSort },
-    { value: 'insertion_Sort', label: 'Insertion Sort' , onClick : insertion_Sort },
+    { value: 'bubbleSort', label: 'Bubble Sort', onclick : bubbleSort },
+    { value: 'insertion_Sort', label: 'Insertion Sort' , onclick : insertion_Sort },
   ]
 
   return(
     <>
 
-    <div style={{display:"flex",flexDirection:'column',justifyContent:"center",alignContent:"center"}}>
-      <div style={{display:"flex",width:"50%",margin:'auto',border:'2px solid blue',justifyContent:"center"}} >
-          {arr.map((a,index)=>(
-          <div key={index}>
-              <h1 className={`div${a}`} style={{height:`${(500/maxElem)*a}px`,border:'2px solid blue',margin:'5px',width:'30px',backgroundColor:'blue'}} ></h1>
-          </div>
-          ))}
+    <div className="grid grid-rows-[80px_minmax(50px,auto)_80px] h-screen">
+      <div className="flex justify-center items-center gap-8 border-b-4">
+        <div style={{width:'300px'}}>
+          <Select className="text-left" options={options} onChange={(e)=>setSelectedOption(e)} isReadOnly={true}/>
+        </div>
       </div>
-      <div style={{width:'300px',margin:'auto',marginTop:'50px'}}>
-      <Select options={options} onChange={(e)=>setSelectedOption(e)}/>
+
+
+      <div className="flex items-center justify-center max-w-screen overflow-hidden">
+        <div className="min-w-[85%] md:min-w-[85%] md:px-2 md:mt-2 center-div h-full gap-1 flex md:gap-2 max-w-screen justify-center items-end" >
+            {arr.map((a,index)=>(
+            <div key={index}>
+                <div className={`div${a}`} style={{height:`${(maxHeight/maxElem)*a}px`,width:`${maxWidth/(allElemLength+1)}px`,backgroundColor:'blue'}} ></div>
+            </div>
+            ))}
+        </div>
       </div>
-      {selectedOption.length!==0 &&
-        (<>
-        <button 
-          onClick={selectedOption.onClick}
-          style={{width:'100px',margin:'auto',marginTop:'50px'}}
-        >Sort</button>
-        </>)
-      }
-      <button onClick={refresh} style={{width:'100px',margin:'auto',marginTop:'50px'}}>Refresh</button>
+
+
+      <div className="flex justify-center items-center gap-8 border-t-4">
+        
+        {selectedOption.value && !started &&
+            (<>
+            <button 
+              onClick={selectedOption.onclick}
+              style={{width:'100px'}} className="border-2 p-2 hover:border-blue-500"
+            >Sort</button>
+
+            <div>
+              <button onClick={refresh} style={{width:'100px'}} className="border-2 p-2 hover:border-blue-500">Refresh</button>
+            </div>
+            </>)
+          }
+          {started && (
+              <>
+              <button className="w-[100px] p-2 border-2 hover:border-blue-500">Stop</button>
+              </>
+            )}
+        
+      </div>
+      
     </div>
       
     </>

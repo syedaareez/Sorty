@@ -1,5 +1,4 @@
 import { useEffect,useState } from "react";
-import Select from 'react-select';
 // import Arr from './Arr';
 
 export default function Work(){
@@ -149,15 +148,14 @@ export default function Work(){
     <>
 
     <div className="grid grid-rows-[80px_minmax(50px,auto)_80px] h-screen">
-      <div  className="flex justify-center items-center gap-8 border-b-4" >
-        <div tabIndex={0} className="w-[300px]" onBlur={()=>setShowDropDown(false)} >
-          {/* <Select className="text-left" options={options} onChange={(e)=>setSelectedOption(e)} isReadOnly={true}/> */}
+      <div  className="flex justify-center items-center gap-8 border-b-4 h-[100%]" >
+        <div tabIndex={0} className="md:w-[300px] md:h-auto w-full h-[100%] " onBlur={()=>setShowDropDown(false)} >
           <div
-            className="w-full border-2 p-2 outline-none cursor-pointer"
+            className="flex w-full border-2 md:p-2 outline-none cursor-pointer h-[100%] justify-center items-center md:text-xl text-2xl"
             onClick={()=>setShowDropDown(!showDropDown)} 
             >{selectedOption?(selectedOption):(" Select an algorithm ")}</div>
           {showDropDown&& !started &&(
-            <div className="w-[300px] absolute flex flex-col border-2 bg-white">
+            <div className="md:w-[300px] w-full absolute flex flex-col border-2 bg-white md:text-xl text-2xl">
               <div className="p-2 hover:bg-gray-100 cursor-pointer" onClick={()=>{changeSelectOption("Bubble Sort"); setShowDropDown(false); refresh();}}>Bubble Sort</div>
               <div className="p-2 hover:bg-gray-100 cursor-pointer" onClick={()=>{changeSelectOption("Insertion Sort"); setShowDropDown(false); refresh();}}>Insertion Sort</div>
             </div>
@@ -168,7 +166,7 @@ export default function Work(){
 
 
       <div className="flex items-center justify-center max-w-screen overflow-hidden">
-        <div className="min-w-[85%] md:min-w-[85%] md:px-2 md:mt-2 center-div h-full gap-1 flex md:gap-2 max-w-screen justify-center items-end" >
+        <div className="min-w-[85%]  md:min-w-[85%] md:px-2 md:mt-2 center-div h-full gap-1 flex md:gap-2 max-w-screen justify-center items-end px-8" >
             {arr.map((a,index)=>(
             <div key={index}>
                 <div className={`div${index}`} style={{height:`${(maxHeight/maxElem)*a}px`,width:`${maxWidth/(allElemLength+1)}px`,backgroundColor:'blue'}} ></div>
@@ -178,18 +176,18 @@ export default function Work(){
       </div>
 
 
-      <div className="flex justify-center items-center gap-8 border-t-4">
+      <div className="flex md:justify-center md:items-center md:border-t-4 border-t-2 md:text-xl text-3xl gap-2 md:gap-0">
         
         {selectedOption&& !started &&
             (<>
             <button 
               onClick={()=>whichFunc()}
-              style={{width:'100px'}} className="border-2 p-2 hover:border-blue-500"
+              className="border-2 p-2 hover:border-blue-500 w-[50%] h-[100%]"
             >Sort</button>
 
-            <div>
-              <button onClick={()=>refresh()} style={{width:'100px'}} className="border-2 p-2 hover:border-blue-500">Refresh</button>
-            </div>
+            
+            <button onClick={()=>refresh()} className="border-2 p-2 hover:border-blue-500 w-[50%] h-[100%]">Refresh</button>
+            
             </>)
         }
         

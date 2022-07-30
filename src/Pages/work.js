@@ -9,9 +9,12 @@ export default function Work(){
   const [allElemLength,setAllElemLength]=useState(0);
   const [maxWidth,setMaxWidth]=useState(0);
   const [maxHeight,setMaxHeight]=useState(0);
+
   const [started,setStarted]=useState(false);
 
-  const [selectedOption,setSelectedOption]=useState({});
+  const [selectedOption,setSelectedOption]=useState("");
+
+  const [whichFunc,setWhichFunc]=useState();
 
   const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -30,47 +33,40 @@ export default function Work(){
     setMaxHeight(block?.clientHeight);
   }
 
-  async function bubbleSort(){
-    
-    setStarted(true);
+  const ArraytoChange=[55,44,77,66,33,11,88,99,22,55,44,77,66,33,11,88,99,22,55,44,77,66,33,11,88,99,22];
 
-    const test_Arr=[...arr];
+  async function bubbleSort(){
+
+    setStarted(true);
+    const test_Arr=[...ArraytoChange];
    
     var check=0;
     for(var i=0;i<test_Arr.length;i++){
       var max=-1;
-      
       for(var j=0;j<test_Arr.length-i-1;j++){
-
-        var block=document.querySelector(`.div${test_Arr[j]}`);
-        var block2=document.querySelector(`.div${test_Arr[j+1]}`);
+        var block=document.querySelector(`.div${j}`);
+        var block2=document.querySelector(`.div${j+1}`);
 
         if(test_Arr[j]>max){
-
-          block.style.backgroundColor="red";
           max=test_Arr[j];
-
         }
 
         if(test_Arr[j]>test_Arr[j+1]){
 
+          block.style.backgroundColor="red";
           check=test_Arr[j];
           test_Arr[j]=test_Arr[j+1];
           test_Arr[j+1]=check;
-          block.style.backgroundColor="red";
+          
           await sleep(10);
-          block.style.backgroundColor="blue";
-          block2.style.backgroundColor="red";
         
         }else{
-
-          block.style.backgroundColor="blue";
           
           block2.style.backgroundColor="red";
 
         }
         setArr([...test_Arr]);
-        await sleep(50);
+        await sleep(20);
         block.style.backgroundColor="blue";
         block2.style.backgroundColor="blue";
       }
@@ -91,18 +87,18 @@ export default function Work(){
 
     setStarted(true);
 
-    const test_Arr=[...arr];
+    const test_Arr=[...ArraytoChange];
     
     for (let i = 1; i < test_Arr.length; i++) {
         let j=i;
 
-        var block2=document.querySelector(`.div${test_Arr[i]}`);
+        var block2=document.querySelector(`.div${i}`);
         block2.style.backgroundColor="red";
 
         while(j>0 && test_Arr[j]<test_Arr[j-1]){
           await sleep(10);
           block2.style.backgroundColor="blue";
-          var block=document.querySelector(`.div${test_Arr[j-1]}`);
+          var block=document.querySelector(`.div${j-1}`);
           block.style.backgroundColor="red";
 
           var temp=test_Arr[j];
@@ -113,7 +109,7 @@ export default function Work(){
           
           setArr([...test_Arr]);
 
-          await sleep(60);
+          await sleep(30);
           block.style.backgroundColor="blue";
         }
 
@@ -129,22 +125,44 @@ export default function Work(){
 
   function refresh(){
     
-    setArr([55,44,77,66,33,11,88,99,22,55,44,77,66,33,11,88,99,22,55,44,77,66,33,11,88,99,22]);
+    setArr([...ArraytoChange]);
 
   }
 
-  const options = [
-    { value: 'bubbleSort', label: 'Bubble Sort', onclick : bubbleSort },
-    { value: 'insertion_Sort', label: 'Insertion Sort' , onclick : insertion_Sort },
-  ]
+  const [showDropDown,setShowDropDown]=useState(false);
+
+  function changeSelectOption(str){
+    setSelectedOption(str);
+    switch(str){
+      case "Bubble Sort":
+        setWhichFunc(()=>bubbleSort);
+        break;
+      case "Insertion Sort":
+        setWhichFunc(()=>insertion_Sort);
+        break;
+      default:
+        console.log("default")
+    }
+  }
 
   return(
     <>
 
     <div className="grid grid-rows-[80px_minmax(50px,auto)_80px] h-screen">
-      <div className="flex justify-center items-center gap-8 border-b-4">
-        <div style={{width:'300px'}}>
-          <Select className="text-left" options={options} onChange={(e)=>setSelectedOption(e)} isReadOnly={true}/>
+      <div  className="flex justify-center items-center gap-8 border-b-4" >
+        <div tabIndex={0} className="w-[300px]" onBlur={()=>setShowDropDown(false)} >
+          {/* <Select className="text-left" options={options} onChange={(e)=>setSelectedOption(e)} isReadOnly={true}/> */}
+          <div
+            className="w-full border-2 p-2 outline-none cursor-pointer"
+            onClick={()=>setShowDropDown(!showDropDown)} 
+            >{selectedOption?(selectedOption):(" Select an algorithm ")}</div>
+          {showDropDown&& !started &&(
+            <div className="w-[300px] absolute flex flex-col border-2 bg-white">
+              <div className="p-2 hover:bg-gray-100 cursor-pointer" onClick={()=>{changeSelectOption("Bubble Sort"); setShowDropDown(false); refresh();}}>Bubble Sort</div>
+              <div className="p-2 hover:bg-gray-100 cursor-pointer" onClick={()=>{changeSelectOption("Insertion Sort"); setShowDropDown(false); refresh();}}>Insertion Sort</div>
+            </div>
+          )}
+          
         </div>
       </div>
 
@@ -153,7 +171,7 @@ export default function Work(){
         <div className="min-w-[85%] md:min-w-[85%] md:px-2 md:mt-2 center-div h-full gap-1 flex md:gap-2 max-w-screen justify-center items-end" >
             {arr.map((a,index)=>(
             <div key={index}>
-                <div className={`div${a}`} style={{height:`${(maxHeight/maxElem)*a}px`,width:`${maxWidth/(allElemLength+1)}px`,backgroundColor:'blue'}} ></div>
+                <div className={`div${index}`} style={{height:`${(maxHeight/maxElem)*a}px`,width:`${maxWidth/(allElemLength+1)}px`,backgroundColor:'blue'}} ></div>
             </div>
             ))}
         </div>
@@ -162,23 +180,18 @@ export default function Work(){
 
       <div className="flex justify-center items-center gap-8 border-t-4">
         
-        {selectedOption.value && !started &&
+        {selectedOption&& !started &&
             (<>
             <button 
-              onClick={selectedOption.onclick}
+              onClick={()=>whichFunc()}
               style={{width:'100px'}} className="border-2 p-2 hover:border-blue-500"
             >Sort</button>
 
             <div>
-              <button onClick={refresh} style={{width:'100px'}} className="border-2 p-2 hover:border-blue-500">Refresh</button>
+              <button onClick={()=>refresh()} style={{width:'100px'}} className="border-2 p-2 hover:border-blue-500">Refresh</button>
             </div>
             </>)
-          }
-          {started && (
-              <>
-              <button className="w-[100px] p-2 border-2 hover:border-blue-500">Stop</button>
-              </>
-            )}
+        }
         
       </div>
       
